@@ -12,7 +12,7 @@ jobs:
       - name: Checkout du repo
         uses: actions/checkout@v4
 
-      - name: Nettoyage
+      - name: Nettoyage avant aspiration
         run: |
           find . -maxdepth 1 ! -name '.github' ! -name '.git' ! -name '.' -exec rm -rf {} +
 
@@ -27,7 +27,18 @@ jobs:
                --user-agent="Mozilla/5.0" \
                https://erimarkivoj.wordpress.com/ || true
           
+      - name: Nettoyage du code HTML
+        run: |
+          # 1. On cache les zones indésirables (barre noire, pub WordPress, recherche cassée)
+          find . -name "*.html" -exec sed -i '/<\/head>/i <style>#wpadminbar, .marketing-bar, #eu-cookie-law, .wp-block-search, .wpcnt, #infinite-footer, .site-info, .jetpack-instant-search, .widget_search { display: none !important; } html { margin-top: 0 !important; } body { margin-bottom: 0 !important; }</style>' {} +
+          
+          # 2. On efface les textes spécifiques que tu as mentionnés
+          find . -name "*.html" -exec sed -i 's/Design a site like this with WordPress.com//g' {} +
+          find . -name "*.html" -exec sed -i 's/Kiel komenci//g' {} +
+          find . -name "*.html" -exec sed -i 's/Search powered by Jetpack//g' {} +
+          find . -name "*.html" -exec sed -i 's/Serĉrezultoj//g' {} +
+
       - name: Envoi vers GitHub
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Mise à jour automatique"
+          commit_message: "Nettoyage complet du footer et de la recherche"
