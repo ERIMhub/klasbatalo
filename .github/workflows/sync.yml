@@ -1,31 +1,33 @@
 name: "Aspiration Erimarkivoj"
 
 on:
-  workflow_dispatch: # Permet de lancer la mise à jour d'un clic
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout du repo
         uses: actions/checkout@v4
 
-      - name: Aspiration du site WordPress
+      - name: Nettoyage
         run: |
-          # On aspire le site avec des options pour éviter d'être bloqué
+          find . -maxdepth 1 ! -name '.github' ! -name '.git' ! -name '.' -exec rm -rf {} +
+
+      - name: Aspiration du site
+        run: |
           wget --mirror \
                --convert-links \
                --adjust-extension \
                --page-requisites \
                --no-parent \
-               --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
-               https://erimarkivoj.wordpress.com/
+               --no-host-directories \
+               --user-agent="Mozilla/5.0" \
+               https://erimarkivoj.wordpress.com/ || true
           
-          # On déplace les fichiers du dossier créé par wget vers la racine
-          cp -r erimarkivoj.wordpress.com/* .
-          rm -rf erimarkivoj.wordpress.com/
-
       - name: Envoi vers GitHub
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Mise à jour du site depuis WordPress"
+          commit_message: "Mise à jour automatique"
