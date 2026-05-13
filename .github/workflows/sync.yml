@@ -30,7 +30,7 @@ jobs:
       - name: Nettoyage et Validation Google
         run: |
           # 1. On insère ta balise de validation Google dans la page d'accueil
-          find . -name "index.html" -exec sed -i '/<\/head>/i <meta name="google-site-verification" content="Brv4OkzwYgpD40vbEO3qlr3AaJtvjtyvygSRLJCx9s8" />' {} +
+          find . -name "index.html" -exec sed -i '/<\/head>/i <meta name="google-site-verification" content="cWy1Bsi259qiIV5iu_87NbEAhqjI0bh89H4BNNKUw1Q" />' {} +
 
           # 2. On cache les zones indésirables (CSS)
           find . -name "*.html" -exec sed -i '/<\/head>/i <style>#wpadminbar, .marketing-bar, #eu-cookie-law, .wp-block-search, .wpcnt, #infinite-footer, .site-info, .jetpack-instant-search, .widget_search { display: none !important; } html { margin-top: 0 !important; } body { margin-bottom: 0 !important; }</style>' {} +
