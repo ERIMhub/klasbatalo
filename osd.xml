@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">
 	<ShortName>erimarkivoj</ShortName>
-	<Description>Search Revolucia esperanta tradukoj kaj arkivoj - Revolucia esperanta tradukoj kaj arkivoj</Description>
+	<Description>Search Esperantista Revolucia Internaciisma Movado - Revolucia esperanta tradukoj kaj arkivoj</Description>
 	<Contact>help@wordpress.com</Contact>
 	<Url type="application/atom+xml" template="https://erimarkivoj.wordpress.com/?s={searchTerms}&amp;feed=atom" />
 	<Url type="rss+xml" template="https://erimarkivoj.wordpress.com/?s={searchTerms}&amp;feed=rss2" />
 	<Url type="text/html" template="https://erimarkivoj.wordpress.com/?s={searchTerms}" method="GET" />
 	<Url type="application/opensearchdescription+xml" rel="self" template="https://erimarkivoj.wordpress.com/osd.xml" />
-	<LongName>Revolucia esperanta tradukoj kaj arkivoj</LongName>
+	<LongName>Esperantista Revolucia Internaciisma Movado</LongName>
 	<Image height="16" width="16" type="image/vnd.microsoft.icon">https://erimarkivoj.wordpress.com/wp-content/uploads/2026/02/cropped-image-29.png?w=16</Image>
 	<Image height="64" width="64" type="image/png">https://erimarkivoj.wordpress.com/wp-content/uploads/2026/02/cropped-image-29.png?w=64</Image>
 	<Query role="example" searchTerms="photography" />
