@@ -51,9 +51,21 @@ jobs:
           echo '<?xml version="1.0" encoding="UTF-8"?>' > "$OUTPUT"
           echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' >> "$OUTPUT"
  
-          find . -name "*.html" | sort | while read filepath; do
+          find . -name "index.html" | sort | while read filepath; do
             cleanpath="${filepath#./}"
             urlpath="${cleanpath%index.html}"
+ 
+            # On exclut les flux, partages réseaux sociaux, pages de tags/catégories/commentaires
+            case "$urlpath" in
+              *feed/*) continue ;;
+              *"?share="*) continue ;;
+              *"?p="*) continue ;;
+              */tag/*) continue ;;
+              */category/*) continue ;;
+              */comments/*) continue ;;
+              */page/[0-9]*/) continue ;;
+            esac
+ 
             echo "  <url>" >> "$OUTPUT"
             echo "    <loc>${BASE_URL}/${urlpath}</loc>" >> "$OUTPUT"
             echo "    <changefreq>monthly</changefreq>" >> "$OUTPUT"
