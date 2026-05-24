@@ -1,8 +1,6 @@
 name: "Aspiration Erimarkivoj"
-
 on:
   workflow_dispatch:
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -11,11 +9,11 @@ jobs:
     steps:
       - name: Checkout du repo
         uses: actions/checkout@v4
-
+ 
       - name: Nettoyage avant aspiration
         run: |
           find . -maxdepth 1 ! -name '.github' ! -name '.git' ! -name '.' -exec rm -rf {} +
-
+ 
       - name: Aspiration du site
         run: |
           wget --mirror \
@@ -26,27 +24,47 @@ jobs:
                --no-host-directories \
                --user-agent="Mozilla/5.0" \
                https://erimarkivoj.wordpress.com/ || true
-          
+ 
       - name: Nettoyage et Validation Google
         run: |
-          # 1. On insère ta balise de validation Google dans la page d'accueil
+          # 1. On insère la balise de validation Google dans la page d'accueil
           find . -name "index.html" -exec sed -i '/<\/head>/i <meta name="google-site-verification" content="cWy1Bsi259qiIV5iu_87NbEAhqjI0bh89H4BNNKUw1Q" />' {} +
-
+ 
           # 2. On cache les zones indésirables (CSS)
           find . -name "*.html" -exec sed -i '/<\/head>/i <style>#wpadminbar, .marketing-bar, #eu-cookie-law, .wp-block-search, .wpcnt, #infinite-footer, .site-info, .jetpack-instant-search, .widget_search { display: none !important; } html { margin-top: 0 !important; } body { margin-bottom: 0 !important; }</style>' {} +
-          
+ 
           # 3. On efface les textes spécifiques
           find . -name "*.html" -exec sed -i 's/Design a site like this with WordPress.com//g' {} +
           find . -name "*.html" -exec sed -i 's/Kiel komenci//g' {} +
           find . -name "*.html" -exec sed -i 's/Search powered by Jetpack//g' {} +
           find . -name "*.html" -exec sed -i 's/Serĉrezultoj//g' {} +
-
+ 
       - name: Injecter la recherche Google
         run: |
-          # On insère le formulaire de recherche Google
           find . -name "*.html" -exec sed -i '/<body/a <div style="padding: 20px; max-width: 800px; margin: auto; text-align: center;"><form action="https://www.google.com/search" method="get" target="_blank"><input type="text" name="q" placeholder="Serĉi per Google..." style="padding: 8px; width: 60%; border: 1px solid #ccc; border-radius: 4px;"><input type="hidden" name="as_sitesearch" value="erimhub.github.io/revoluciuloj"><button type="submit" style="padding: 8px 15px; margin-left: 10px; cursor: pointer; background: #0073aa; color: white; border: none; border-radius: 4px;">Serĉi</button></form></div>' {} +
-
+ 
+      - name: Générer le sitemap
+        run: |
+          BASE_URL="https://erimhub.github.io/revoluciuloj"
+          OUTPUT="sitemap.xml"
+ 
+          echo '<?xml version="1.0" encoding="UTF-8"?>' > "$OUTPUT"
+          echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' >> "$OUTPUT"
+ 
+          find . -name "*.html" | sort | while read filepath; do
+            cleanpath="${filepath#./}"
+            urlpath="${cleanpath%index.html}"
+            echo "  <url>" >> "$OUTPUT"
+            echo "    <loc>${BASE_URL}/${urlpath}</loc>" >> "$OUTPUT"
+            echo "    <changefreq>monthly</changefreq>" >> "$OUTPUT"
+            echo "    <priority>0.8</priority>" >> "$OUTPUT"
+            echo "  </url>" >> "$OUTPUT"
+          done
+ 
+          echo '</urlset>' >> "$OUTPUT"
+          echo "Sitemap généré avec $(grep -c '<loc>' "$OUTPUT") URLs."
+ 
       - name: Envoi vers GitHub
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Mise à jour : Validation Google + Recherche"
+          commit_message: "Mise à jour : Validation Google + Recherche + Sitemap"
